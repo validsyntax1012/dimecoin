@@ -3,17 +3,16 @@ TARGET = Dimecoin-qt
 macx:TARGET = "Dimecoin-Qt"
 VERSION = 1.0.0
 INCLUDEPATH += src src/json src/qt
-QT += core gui network
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
-DEFINES += QT_STATIC
 CONFIG += no_include_pwd
 CONFIG += thread
-CONFIG += static
-CONFIG += openssl
-# CONFIG += openssl-linked
-# and 
+QT += core gui network
+#mac {
 
-QMAKE_CXXFLAGS = -fpermissive
+#MINIUPNPC_LIB_PATH = /Users/william/Downloads/miniupnpc-1.9.20150730
+#MINIUPNPC_INCLUDE_PATH = /Users/william/Downloads/miniupnpc-1.9.20150730
+
+#}
 
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT += widgets
@@ -74,9 +73,7 @@ UI_DIR = build
 # use: qmake "RELEASE=1"
 contains(RELEASE, 1) {
     # Mac: compile for maximum compatibility (10.5, 32-bit)
-    macx:QMAKE_CXXFLAGS += -mmacosx-version-min=10.5 -arch i386 -isysroot /Developer/SDKs/MacOSX10.5.sdk
-    macx:QMAKE_CFLAGS += -mmacosx-version-min=10.5 -arch i386 -isysroot /Developer/SDKs/MacOSX10.5.sdk
-    macx:QMAKE_OBJECTIVE_CFLAGS += -mmacosx-version-min=10.5 -arch i386 -isysroot /Developer/SDKs/MacOSX10.5.sdk
+    macx:QMAKE_CXXFLAGS += -mmacosx-version-min=10.5 -arch x86_64 -isysroot /Developer/SDKs/MacOSX10.5.sdk
 
     !win32:!macx {
         # Linux: static link and extra security (see: https://wiki.debian.org/Hardening)
@@ -184,8 +181,7 @@ QMAKE_CLEAN += $$PWD/src/leveldb/libleveldb.a; cd $$PWD/src/leveldb ; $(MAKE) cl
     DEFINES += HAVE_BUILD_INFO
 }
 
-QMAKE_CXXFLAGS_WARN_ON = -fdiagnostics-show-option -Wall -Wextra -Wformat -Wformat-security -Wno-unused-parameter -Wstack-protector
-
+QMAKE_CXXFLAGS_WARN_ON = -fdiagnostics-show-option -Wall -Wextra -Wno-ignored-qualifiers -Wformat -Wformat-security -Wno-unused-parameter -Wstack-protector
 # Input
 DEPENDPATH += src src/json src/qt
 HEADERS += src/qt/bitcoingui.h \
@@ -374,16 +370,16 @@ SOURCES += src/qt/qrcodedialog.cpp
 FORMS += src/qt/forms/qrcodedialog.ui
 }
 
-contains(BITCOIN_QT_TEST, 1) {
-SOURCES += src/qt/test/test_main.cpp \
-    src/qt/test/uritests.cpp
-HEADERS += src/qt/test/uritests.h
-DEPENDPATH += src/qt/test
-QT += testlib
-TARGET = bitcoin-qt_test
-DEFINES += BITCOIN_QT_TEST
-  macx: CONFIG -= app_bundle
-}
+#contains(BITCOIN_QT_TEST, 1) {
+#SOURCES += src/qt/test/test_main.cpp \
+#    src/qt/test/uritests.cpp
+#HEADERS += src/qt/test/uritests.h
+#DEPENDPATH += src/qt/test
+#QT += testlib
+#TARGET = bitcoin-qt_test
+#DEFINES += BITCOIN_QT_TEST
+ # macx: CONFIG -= app_bundle
+#}
 
 CODECFORTR = UTF-8
 
@@ -460,12 +456,12 @@ win32:!contains(MINGW_THREAD_BUGFIX, 0) {
     QMAKE_LIBS_QT_ENTRY = -lmingwthrd $$QMAKE_LIBS_QT_ENTRY
 }
 
-!win32:!macx {
-    DEFINES += LINUX
-    LIBS += -lrt
-    # _FILE_OFFSET_BITS=64 lets 32-bit fopen transparently support large files.
-    DEFINES += _FILE_OFFSET_BITS=64
-}
+#!win32:!macx {
+#    DEFINES += LINUX
+#    LIBS += -lrt
+#    # _FILE_OFFSET_BITS=64 lets 32-bit fopen transparently support large files.
+#    DEFINES += _FILE_OFFSET_BITS=64
+#}
 
 macx:HEADERS += src/qt/macdockiconhandler.h
 macx:OBJECTIVE_SOURCES += src/qt/macdockiconhandler.mm
@@ -477,7 +473,7 @@ macx:ICON = src/qt/res/icons/bitcoin.icns
 macx:QMAKE_CFLAGS_THREAD += -pthread
 macx:QMAKE_LFLAGS_THREAD += -pthread
 macx:QMAKE_CXXFLAGS_THREAD += -pthread
-macx:QMAKE_INFO_PLIST = share/qt/Info.plist
+
 
 # Set libraries and includes at end, to use platform-defined defaults if not overridden
 INCLUDEPATH += $$BOOST_INCLUDE_PATH $$BDB_INCLUDE_PATH $$OPENSSL_INCLUDE_PATH $$QRENCODE_INCLUDE_PATH
